@@ -7,7 +7,7 @@ import java.util.List;
  */
 public class Package {
 
-    //M1: Initialise this static counter to 1.-------------------------------------------done
+    //M1: Initialize this static counter to 1.-------------------------------------------done
     private static int nextTrackingNumber = 1;
 
     private static final List<String> VALID_DESTINATIONS = Arrays.asList(
@@ -27,8 +27,6 @@ public class Package {
     private boolean isFragile;
     private double declaredValue;
     private double cost;
-    private String base;
-
 
     /*
      * Full constructor with all 9 parameters.
@@ -46,44 +44,35 @@ public class Package {
                    int lengthCm, int widthCm, int heightCm,
                    String destination, boolean isFragile, double declaredValue) {
 
-
         // TO DO M2: Write validation and field assignments here
-
         if (senderName == null || senderName.isEmpty()){
-            throw new IllegalArgumentException("sender name must not be null or empty.");
-        }
+            throw new IllegalArgumentException("sender name must not be null or empty.");}
 
         if (receiverName == null || receiverName.isEmpty()){
-            throw new IllegalArgumentException("receiver name must not be null or empty.");
-        }
+            throw new IllegalArgumentException("receiver name must not be null or empty.");}
 
-        if (weightKg < 0){
-            throw new IllegalArgumentException("weight (Kg) must be greater than zero.");
-        }
+        if (weightKg <= 0){
+            throw new IllegalArgumentException("weight (Kg) must be greater than zero.");}
 
-        if (lengthCm < 0 || widthCm < 0 || heightCm < 0){
-            throw new IllegalArgumentException("length, height and width must be greater than zero.");
-        }
+        if (lengthCm <= 0 || widthCm <= 0 || heightCm <= 0){
+            throw new IllegalArgumentException("length, height and width must be greater than zero.");}
 
         boolean validDestination = VALID_DESTINATIONS.contains(destination);
         if (!validDestination){
-            throw new IllegalArgumentException("destination is not valid.");
-        }
+            throw new IllegalArgumentException("destination is not valid.");}
 
-        String.format("PKG-%04d", nextTrackingNumber);
+        this.trackingId = String.format("PKG-%04d", nextTrackingNumber);
         nextTrackingNumber++;
-
-
-
-
-
+        this.senderName = senderName;
+        this.receiverName = receiverName;
+        this.weightKg = weightKg;
+        this.lengthCm = lengthCm;
+        this.widthCm = widthCm;
+        this.heightCm = heightCm;
+        this.destination = destination;
+        this.isFragile = isFragile;
+        this.declaredValue = declaredValue;
     }
-
-
-
-
-
-
 
     /*
      * Convenience constructor: not fragile, no declared value.
@@ -92,79 +81,44 @@ public class Package {
      */
     public Package(String senderName, String receiverName, double weightKg,
                    int lengthCm, int widthCm, int heightCm, String destination) {
-        // TO DO M3: Write the this(...) call here
 
+        // TO DO M3: Write the this(...) call here
         this(senderName, receiverName, weightKg, lengthCm, widthCm, heightCm,
                 destination, false, 0.0);
     }
-
-
-
-
-
-
-
-
-
-
-
 
     // --- Getters ---
     // TO DO M4: Write getters for ALL fields:
     //   getTrackingId(), getSenderName(), getReceiverName(), getWeightKg(),
     //   getLengthCm(), getWidthCm(), getHeightCm(), getDestination(),
     //   isFragile(), getDeclaredValue()
-
     // --- Computed methods ---
 
+    public String getTrackingId() {return this.trackingId; }
+    public String getSenderName() {return this.senderName; }
+    public String getReceiverName() {return this.receiverName; }
+    public double getWeightKg() {return this.weightKg; }
+    public int getLengthCm() {return this.lengthCm; }
+    public int getWidthCm() {return widthCm; }
+    public int getHeightCm() {return heightCm; }
+    public String getDestination() {return this.destination; }
+    public boolean isFragile() {return isFragile; }
+    public double getDeclaredValue() {return declaredValue; }
 
-    public String getTrackingId() { return this.trackingId; }
-    public String getSenderName() {  return this.senderName; }
-    public String getReceiverName() {  return this.receiverName; }
-    public double getWeightKg() {  return this.weightKg; }
-    public int getLengthCm() {  return this.lengthCm; }
-    public int getWidthCm() { return widthCm; }
-    public int getHeightCm() { return heightCm; }
-    public String getDestination() {  return this.destination; }
-    public boolean isFragile() { return isFragile; }
-    public double getDeclaredValue() { return declaredValue; }
-
-
-
-
-
-
-
-
-
-
-    /*
-     * TO DO M5: Return lengthCm * widthCm * heightCm
-     */
+    //TO DO M5: Return lengthCm * widthCm * heightCm
     public int getVolumeCm3() {
         return lengthCm * widthCm * heightCm; // TO DO M5
     }
 
-    /*
-     * TO DO M5: Return getVolumeCm3() / 5000.0
-     */
+    //TO DO M5: Return getVolumeCm3() / 5000.0
     public double getVolumetricWeightKg() {
         return getVolumeCm3() /5000.0; // TO DO M5
     }
 
-    /*
-     * TO DO M5: Return Math.max(weightKg, getVolumetricWeightKg())
-     */
+    //TO DO M5: Return Math.max(weightKg, getVolumetricWeightKg())
     public double getBillableWeightKg() {
         return Math.max(weightKg, getVolumetricWeightKg()); // TO DO M5
     }
-
-
-
-
-
-
-
 
     /*
      * TO DO M6: Implement the shipping cost formula.
@@ -184,38 +138,24 @@ public class Package {
             case "Grenada": ratePerKg = 10.00; break;
             default: ratePerKg = 0.0; break;
         }
-
         cost = getBillableWeightKg() * ratePerKg;
         if (isFragile) {
-            cost *= 1.25;
-        }
+            cost *= 1.25;}
         if (declaredValue > 0) {
-            cost += declaredValue * 0.015;
-        }
+            cost += declaredValue * 0.015;}
         return Math.round(cost * 100) / 100.0;
     }
 
-
-
-    /*
-     * TO DO M7: Return a string in this format:
-     *   "PKG-0001  Alice -> Bob  Trinidad  5.00 kg  $40.00"
-     * If fragile, append "  [FRAGILE]" at the end.
-     * Use String.format for formatting.
-     */
+    //TO DO M7:
     @Override
     public String toString() {
         String base = String.format("PKG-%04d %s -> %s %s %.2f kg $%.2f",
                 Integer.parseInt(trackingId.substring(4)),
                 senderName, receiverName, destination, getBillableWeightKg(),
                 getShippingCost());
-
         if (isFragile){
             return base + " [FRAGILE]";
         }
-
         return base;
     }
 }
-
-
